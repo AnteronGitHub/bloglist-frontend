@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = '/api/blogs'
+const baseUrl = `${process.env.REACT_APP_BACKEND_URL || ''}/api/blogs`
 
 const getAll = () => {
   const request = axios.get(baseUrl)
