@@ -3,25 +3,57 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+const ErrorNotification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
+
 const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  const displayError = message => {
+    setErrorMessage(message)
+    setTimeout(() => setErrorMessage(null), 5000)
+  }
 
   const handleSubmit = async e => {
     e.preventDefault()
+    let user
     try {
-      const user = await loginService.login({ username, password })
+      user = await loginService.login({ username, password })
       setUsername('')
       setPassword('')
       handleLogin(user)
     } catch (exception) {
-      console.error(exception)
+      displayError('invalid credentials')
     }
   }
 
   return (
     <div>
       <h2>Log in to application</h2>
+      <ErrorNotification message={errorMessage} />
       <form onSubmit={handleSubmit}>
         <div>
           username:{' '}
@@ -101,20 +133,32 @@ const BlogForm = ({ handleCreateBlog }) => {
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     const userData = JSON.parse(window.localStorage.getItem('user'))
+    if (!userData) {
+      return
+    }
     setUser(userData)
     blogService.setToken(userData.token)
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
+
+  const displayNotification = message => {
+    setMessage(message)
+    setTimeout(() => setMessage(null), 5000)
+  }
 
   const handleLogin = user => {
     setUser(user)
     blogService.setToken(user.token)
     window.localStorage.setItem('user', JSON.stringify(user))
+    blogService.getAll().then(blogs =>
+      setBlogs( blogs )
+    )
   }
 
   const handleLogout = e => {
@@ -125,6 +169,7 @@ const App = () => {
 
   const handleCreateBlog = blog => {
     setBlogs(blogs.concat(blog))
+    displayNotification(`new blog ${blog.title} by ${blog.author}`)
   }
 
   if (!user) {
@@ -134,6 +179,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={message} />
       <div>
         {user.username} logged in{' '}
         <button onClick={handleLogout}>logout</button>
