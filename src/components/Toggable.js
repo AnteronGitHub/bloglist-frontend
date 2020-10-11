@@ -7,7 +7,7 @@ const Toggable = React.forwardRef((props, ref) => {
   const hideWhenVisible = { display: visible ? 'none': '' }
   const showWhenVisible = { display: visible ? '': 'none' }
 
-  const handleToggle = e => {
+  const handleToggle = () => {
     setVisible(!visible)
   }
 
@@ -34,5 +34,7 @@ Toggable.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
   children: PropTypes.node
 }
+
+Toggable.displayName = 'Toggable'
 
 export default Toggable

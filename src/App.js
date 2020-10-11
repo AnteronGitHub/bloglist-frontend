@@ -120,12 +120,12 @@ const App = () => {
       )}
       <div>
         {blogs.sort((b1, b2) => b2.likes - b1.likes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleDelete={handleBlogDelete(blog)}
-          handleLike={handleBlogLike(blog)}
-        />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleDelete={handleBlogDelete(blog)}
+            handleLike={handleBlogLike(blog)}
+          />
         )}
       </div>
     </div>

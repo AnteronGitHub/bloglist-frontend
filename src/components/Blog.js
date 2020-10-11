@@ -12,38 +12,38 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
     marginBottom: 5
   }
 
-  const toggleDetailed = e => {
+  const toggleDetailed = () => {
     setDetailed(!detailed)
   }
 
   return (
     <div style={blogStyle}>
       {detailed
-      ? (
-        <>
-        <div>
-          {blog.title}{' '}
-          <button onClick={toggleDetailed}>hide</button>
-        </div>
-        <div>
-          {blog.url}
-        </div>
-        <div>
+        ? (
+          <>
+            <div>
+              {blog.title}{' '}
+              <button onClick={toggleDetailed}>hide</button>
+            </div>
+            <div>
+              {blog.url}
+            </div>
+            <div>
           likes: {blog.likes}{' '}
-          <button onClick={e => handleLike(blog)}>like</button>
-        </div>
-        <div>
-          {blog.user.name}
-        </div>
-        <button onClick={e => handleDelete(blog)}>remove</button>
-        </>
-      )
-      : (
-        <div>
-          {blog.title} {blog.author}{' '}
-          <button onClick={toggleDetailed}>view</button>
-        </div>
-      )}
+              <button onClick={() => handleLike(blog)}>like</button>
+            </div>
+            <div>
+              {blog.user.name}
+            </div>
+            <button onClick={() => handleDelete(blog)}>remove</button>
+          </>
+        )
+        : (
+          <div>
+            {blog.title} {blog.author}{' '}
+            <button onClick={toggleDetailed}>view</button>
+          </div>
+        )}
     </div>
   )
 }
