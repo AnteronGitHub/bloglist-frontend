@@ -40,6 +40,19 @@ const App = () => {
     setTimeout(() => setMessage(null), 5000)
   }
 
+  const handleBlogLike = blog => async () => {
+    try {
+      await blogService.updateBlog({ ...blog, likes: blog.likes + 1 })
+      setBlogs(blogs.map(b => b.id === blog.id ? { ...b, likes: b.likes + 1 }: b))
+    } catch (exception) {
+      if (exception.response.status === 401) {
+        displayError('Need to be logged in in order to like')
+      } else {
+        displayError(exception.response.data.error)
+      }
+    }
+  }
+
   const handleLogin = async user => {
     try {
       const auth = await loginService.login(user)
@@ -56,6 +69,7 @@ const App = () => {
     e.preventDefault()
     const loggedOutUser = user
     setUser(null)
+    blogService.setToken(null)
     window.localStorage.removeItem('user')
     displayNotification(`${loggedOutUser.username} logged out`)
   }
@@ -89,7 +103,7 @@ const App = () => {
       )}
       <div>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} handleLike={handleBlogLike(blog)} />
         )}
       </div>
     </div>
