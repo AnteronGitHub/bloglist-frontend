@@ -3,17 +3,17 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = async e => {
+  const handleSubmit = async e => {
     e.preventDefault()
     try {
       const user = await loginService.login({ username, password })
       setUsername('')
       setPassword('')
-      setUser(user)
+      handleLogin(user)
     } catch (exception) {
       console.error(exception)
     }
@@ -22,7 +22,7 @@ const LoginForm = ({ setUser }) => {
   return (
     <div>
       <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <div>
           username:{' '}
           <input
@@ -52,19 +52,34 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
+    setUser(JSON.parse(window.localStorage.getItem('user')))
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
   }, [])
 
+  const handleLogin = user => {
+    setUser(user)
+    window.localStorage.setItem('user', JSON.stringify(user))
+  }
+
+  const handleLogout = e => {
+    e.preventDefault()
+    setUser(null)
+    window.localStorage.removeItem('user')
+  }
+
   if (!user) {
-    return <LoginForm setUser={token => setUser(token)} />
+    return <LoginForm handleLogin={handleLogin} />
   }
 
   return (
     <div>
       <h2>blogs</h2>
-      <div>{user.username} logged in</div><br />
+      <div>
+        {user.username} logged in{' '}
+        <button onClick={handleLogout}>logout</button>
+      </div><br />
       <div>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
