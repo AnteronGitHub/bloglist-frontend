@@ -53,6 +53,23 @@ const App = () => {
     }
   }
 
+  const handleBlogDelete = blog => async () => {
+    if (!window.confirm(`Removing ${blog.title} by ${blog.author}`)) {
+      return
+    }
+    try {
+      await blogService.deleteBlog(blog)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+      displayNotification(`Removed ${blog.title} by ${blog.author}`)
+    } catch (exception) {
+      if (exception.response.status === 401) {
+        displayError('You are not authorized to remove this blog')
+      } else {
+        displayError(exception.response.data.error)
+      }
+    }
+  }
+
   const handleLogin = async user => {
     try {
       const auth = await loginService.login(user)
@@ -103,7 +120,12 @@ const App = () => {
       )}
       <div>
         {blogs.sort((b1, b2) => b2.likes - b1.likes).map(blog =>
-          <Blog key={blog.id} blog={blog} handleLike={handleBlogLike(blog)} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleDelete={handleBlogDelete(blog)}
+          handleLike={handleBlogLike(blog)}
+        />
         )}
       </div>
     </div>
