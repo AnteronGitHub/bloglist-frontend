@@ -47,12 +47,65 @@ const LoginForm = ({ handleLogin }) => {
   )
 }
 
+const BlogForm = ({ handleCreateBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    const blog = await blogService.createNew({ title, author, url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    handleCreateBlog(blog)
+  }
+
+  return (
+    <div>
+      <h2>create new</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          title:{' '}
+          <input
+            type="text"
+            value={title}
+            name="Title"
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          author:{' '}
+          <input
+            type="text"
+            value={author}
+            name="Author"
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url:{' '}
+          <input
+            type="text"
+            value={url}
+            name="Url"
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </div>
+  )
+}
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    setUser(JSON.parse(window.localStorage.getItem('user')))
+    const userData = JSON.parse(window.localStorage.getItem('user'))
+    setUser(userData)
+    blogService.setToken(userData.token)
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
@@ -60,6 +113,7 @@ const App = () => {
 
   const handleLogin = user => {
     setUser(user)
+    blogService.setToken(user.token)
     window.localStorage.setItem('user', JSON.stringify(user))
   }
 
@@ -67,6 +121,10 @@ const App = () => {
     e.preventDefault()
     setUser(null)
     window.localStorage.removeItem('user')
+  }
+
+  const handleCreateBlog = blog => {
+    setBlogs(blogs.concat(blog))
   }
 
   if (!user) {
@@ -80,6 +138,7 @@ const App = () => {
         {user.username} logged in{' '}
         <button onClick={handleLogout}>logout</button>
       </div><br />
+      <BlogForm handleCreateBlog={handleCreateBlog} />
       <div>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
