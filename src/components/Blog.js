@@ -22,7 +22,7 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
         ? (
           <>
             <div>
-              {blog.title}{' '}
+              {blog.title} {blog.author}{' '}
               <button onClick={toggleDetailed}>hide</button>
             </div>
             <div>
