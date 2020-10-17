@@ -51,3 +51,32 @@ test('renders content properly when view is clicked', () => {
   expect(component.container).toHaveTextContent(blog.url)
   expect(component.container).toHaveTextContent(blog.likes)
 })
+
+test('like handler is called twice when the button is clicked twice', () => {
+  const blog = {
+    title: 'Moby Dick',
+    author: 'Hemingway',
+    url: 'http://example.com',
+    likes: 1,
+    user: {
+      id: '1',
+      name: 'test',
+      username: 'test'
+    }
+  }
+
+  const mockHandleLike = jest.fn()
+
+  const component = render(
+    <Blog blog={blog} handleDelete={() => {}} handleLike={mockHandleLike}/>
+  )
+
+  const viewButton = component.getByText('view')
+  fireEvent.click(viewButton)
+
+  const likeButton = component.getByText('like')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockHandleLike.mock.calls).toHaveLength(2)
+})
