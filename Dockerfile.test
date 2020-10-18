@@ -1,0 +1,23 @@
+FROM cypress/base
+
+# User management
+ARG UID=1001
+ARG GID=1001
+
+RUN groupadd developer -g $GID
+RUN useradd developer -g $GID -u $UID -m -s /bin/bash
+RUN mkdir /app
+RUN chown developer:developer /app
+
+USER developer
+
+# Application installation
+WORKDIR /app
+COPY . .
+
+RUN npm install
+
+# Environment setup
+ENV LANG C.UTF-8
+
+CMD ['npx' 'cypress' 'run']
