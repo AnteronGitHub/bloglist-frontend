@@ -92,5 +92,44 @@ describe('Blog app', function() {
         cy.contains('no matching blogs for authenticated users was found')
       })
     })
+
+    describe('and multiple blogs exist', function () {
+      const testBlogs = [
+        {
+          title: "test blog1",
+          author: "test author",
+          url: "http://example.com",
+          likes: 1
+        },
+        {
+          title: "test blog2",
+          author: "test author",
+          url: "http://example.com",
+          likes: 2
+        },
+        {
+          title: "test blog3",
+          author: "test author",
+          url: "http://example.com",
+          likes: 3
+        }
+      ]
+
+      beforeEach(function () {
+        cy.login(testUser)
+        testBlogs.forEach(function(blog) {
+          cy.createBlog(blog)
+        })
+      })
+
+      it('blogs are ordered by their likes', function() {
+        const orderedBlogs = testBlogs.sort((b1, b2) => b2.likes - b1.likes)
+        cy.get('.blog').then((blogs) => {
+          orderedBlogs.forEach((blog, index) => {
+            cy.wrap(blogs[index]).contains(blog.title)
+          })
+        })
+      })
+    })
   })
 })

@@ -17,7 +17,7 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       {detailed
         ? (
           <>
