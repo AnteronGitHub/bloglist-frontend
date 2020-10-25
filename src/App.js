@@ -61,7 +61,7 @@ const App = () => {
       />
       {user && <BlogForm />}
       <div>
-        {blogs.sort((b1, b2) => b2.likes - b1.likes).map(blog =>
+        {blogs.slice().sort((b1, b2) => b2.likes - b1.likes).map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
       </div>
