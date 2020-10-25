@@ -10,6 +10,7 @@ import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import BlogPage from './components/BlogPage'
 import ErrorNotification from './components/ErrorNotification'
+import Menu from './components/Menu'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import UserPage from './components/UserPage'
@@ -35,16 +36,19 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <Menu />
+      <h2>blog app</h2>
       <ErrorNotification />
       <Notification />
-      <LoginForm />
       <Switch>
         <Route path='/users/:id'>
           <UserPage user={user} />
         </Route>
         <Route path='/users'>
           <UsersPage />
+        </Route>
+        <Route path='/login'>
+          <LoginForm />
         </Route>
         <Route path='/blogs/:id'>
           <BlogPage blog={blog} />

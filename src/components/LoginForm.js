@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
-import { login, logout } from '../reducers/authReducer'
+import { login } from '../reducers/authReducer'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
-  const auth = useSelector(state => state.auth)
+  const history = useHistory()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -14,20 +15,7 @@ const LoginForm = () => {
     dispatch(login({ username, password }))
     setUsername('')
     setPassword('')
-  }
-
-  const handleLogout = e => {
-    e.preventDefault()
-    dispatch(logout())
-  }
-
-  if (auth) {
-    return (
-      <div>
-        {auth.username} logged in{' '}
-        <button onClick={handleLogout}>logout</button>
-      </div>
-    )
+    history.push('/')
   }
 
   return (
