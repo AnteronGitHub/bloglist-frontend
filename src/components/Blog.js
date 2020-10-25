@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, handleDelete, handleLike }) => {
+import { deleteBlog, likeBlog } from '../reducers/blogsReducer'
+
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch()
   const [detailed, setDetailed] = useState(false)
 
   const blogStyle = {
@@ -14,6 +18,13 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
 
   const toggleDetailed = () => {
     setDetailed(!detailed)
+  }
+
+  const handleLike = () => dispatch(likeBlog(blog))
+  const handleDelete = () => {
+    if (window.confirm(`Removing ${blog.title} by ${blog.author}`)) {
+      dispatch(deleteBlog(blog))
+    }
   }
 
   return (
@@ -30,12 +41,12 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
             </div>
             <div>
           likes: {blog.likes}{' '}
-              <button onClick={() => handleLike(blog)}>like</button>
+              <button onClick={handleLike}>like</button>
             </div>
             <div>
               {blog.user.name}
             </div>
-            <button onClick={() => handleDelete(blog)}>remove</button>
+            <button onClick={handleDelete}>remove</button>
           </>
         )
         : (
@@ -58,9 +69,7 @@ Blog.propTypes = {
       name: PropTypes.string,
       username: PropTypes.string
     })
-  }),
-  handleDelete: PropTypes.func.isRequired,
-  handleLike: PropTypes.func.isRequired
+  })
 }
 
 export default Blog

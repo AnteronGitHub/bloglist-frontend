@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 
 const ErrorNotification = () => {
-  const error = useSelector(state => state.error)
+  const error = useSelector(state => state.notification.error)
   if (error === '') {
     return null
   }
