@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react'
+import { Button, Col, Container, Form, ListGroup, Row } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
@@ -8,7 +9,7 @@ import { commentBlog, deleteBlog, likeBlog } from '../reducers/blogsReducer'
 const BlogPage = ({ blog }) => {
   const dispatch = useDispatch()
   const history = useHistory()
-  const [comment, setComment] = useState('')
+  const auth = useSelector(state => state.auth)
 
   if (!blog) {
     return null
@@ -23,38 +24,45 @@ const BlogPage = ({ blog }) => {
     }
   }
 
-  const handleComment = event => {
+  const submitComment = event => {
     event.preventDefault()
-    dispatch(commentBlog(blog, comment))
+    const comment = event.target.comment.value
+    if (comment !== '') {
+      dispatch(commentBlog(blog, comment))
+    }
   }
 
   return (
     <div>
       <h2>{blog.title}</h2>
-      <div>
-        <a href={blog.url}>{blog.url}</a>
-      </div>
-      <div>
-        {blog.likes} likes
-        <button onClick={handleLike}>like</button>
-      </div>
-      <div>
-        added by {blog.user.name}
-      </div>
-      <button onClick={handleDelete}>remove</button>
+      <Container fluid>
+        <Row>
+          <Col><a href={blog.url}>{blog.url}</a></Col>
+        </Row>
+        <Row>
+          <Col>{blog.likes} likes</Col>
+          <Col><Button onClick={handleLike}>like</Button></Col>
+        </Row>
+        <Row>
+          <Col>added by {blog.user.name}</Col>
+          {blog.user.username === auth.username &&
+            <Col>
+              <Button variant='danger' onClick={handleDelete}>remove</Button>
+            </Col>
+          }
+        </Row>
+      </Container>
       <h3>comments</h3>
-      <form onSubmit={handleComment}>
-        <input
-          type="text"
-          value={comment}
-          name="Comment"
-          onChange={event => setComment(event.target.value)}
-        />
-        <button type="submit">add comment</button>
-      </form>
-      <ul>
-        {blog.comments.map((content, i) => <li key={i}>{content}</li>)}
-      </ul>
+      <Form inline onSubmit={submitComment}>
+        <Form.Group>
+          <Form.Control type='text' name='comment' />
+          <Button variant='primary' type="submit">add comment</Button>
+        </Form.Group>
+      </Form>
+      <ListGroup>
+        {blog.comments.map((content, i) =>
+          <ListGroup.Item key={i}>{content}</ListGroup.Item>)}
+      </ListGroup>
     </div>
   )
 }

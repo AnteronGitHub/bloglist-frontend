@@ -13,7 +13,7 @@ export const initAuth = () => {
   }
 }
 
-export const login = credentials => {
+export const login = (credentials, history) => {
   return async dispatch => {
     try {
       const auth = await loginService.login(credentials)
@@ -21,6 +21,7 @@ export const login = credentials => {
       blogService.setToken(auth.token)
       window.localStorage.setItem('auth', JSON.stringify(auth))
       dispatch(setNotificationMessage(`${auth.username} logged in`))
+      history.push('/')
     } catch (error) {
       dispatch(setNotificationMessage(error.response.data.error, 'error'))
     }

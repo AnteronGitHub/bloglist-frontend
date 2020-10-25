@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { Alert, ListGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, useRouteMatch } from 'react-router-dom'
 
@@ -9,10 +10,8 @@ import { initUsers } from './reducers/usersReducer'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import BlogPage from './components/BlogPage'
-import ErrorNotification from './components/ErrorNotification'
 import Menu from './components/Menu'
 import LoginForm from './components/LoginForm'
-import Notification from './components/Notification'
 import UserPage from './components/UserPage'
 import UsersPage from './components/UsersPage'
 
@@ -21,6 +20,8 @@ const App = () => {
   const blogs = useSelector(state => state.blogs)
   const auth = useSelector(state => state.auth)
   const users = useSelector(state => state.users)
+  const error = useSelector(state => state.notification.error)
+  const notification = useSelector(state => state.notification.notification)
 
   useEffect(() => {
     dispatch(initBlogs())
@@ -35,11 +36,11 @@ const App = () => {
   const blog = blogMatch ? blogs.find(b => b.id === blogMatch.params.id) : null
 
   return (
-    <div>
+    <div className='container'>
       <Menu />
       <h2>blog app</h2>
-      <ErrorNotification />
-      <Notification />
+      {error !== '' && <Alert variant='danger'>{error}</Alert>}
+      {notification !== '' && <Alert variant='success'>{notification}</Alert>}
       <Switch>
         <Route path='/users/:id'>
           <UserPage user={user} />
@@ -55,11 +56,13 @@ const App = () => {
         </Route>
         <Route path='/'>
           {auth && <BlogForm />}
-          <div>
+          <ListGroup>
             {blogs.slice().sort((b1, b2) => b2.likes - b1.likes).map(blog =>
-              <Blog key={blog.id} blog={blog} />
+            <ListGroup.Item key={blog.id}>
+              <Blog blog={blog} />
+            </ListGroup.Item>
             )}
-          </div>
+          </ListGroup>
         </Route>
       </Switch>
     </div>
