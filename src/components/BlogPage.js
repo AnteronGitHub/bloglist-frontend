@@ -36,6 +36,10 @@ const BlogPage = ({ blog }) => {
         added by {blog.user.name}
       </div>
       <button onClick={handleDelete}>remove</button>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((content, i) => <li key={i}>{content}</li>)}
+      </ul>
     </div>
   )
 }
@@ -45,6 +49,7 @@ BlogPage.propTypes = {
     title: PropTypes.string,
     url: PropTypes.string,
     likes: PropTypes.number,
+    comments: PropTypes.arrayOf(PropTypes.string),
     user: PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
