@@ -1,50 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, handleDelete, handleLike }) => {
-  const [detailed, setDetailed] = useState(false)
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const toggleDetailed = () => {
-    setDetailed(!detailed)
-  }
-
+const Blog = ({ blog }) => {
   return (
-    <div className="blog" style={blogStyle}>
-      {detailed
-        ? (
-          <>
-            <div>
-              {blog.title} {blog.author}{' '}
-              <button onClick={toggleDetailed}>hide</button>
-            </div>
-            <div>
-              {blog.url}
-            </div>
-            <div>
-          likes: {blog.likes}{' '}
-              <button onClick={() => handleLike(blog)}>like</button>
-            </div>
-            <div>
-              {blog.user.name}
-            </div>
-            <button onClick={() => handleDelete(blog)}>remove</button>
-          </>
-        )
-        : (
-          <div>
-            {blog.title} {blog.author}{' '}
-            <button onClick={toggleDetailed}>view</button>
-          </div>
-        )}
-    </div>
+    <Link to={`/blogs/${blog.id}`}>
+      {blog.title} {blog.author}
+    </Link>
   )
 }
 
@@ -58,9 +20,7 @@ Blog.propTypes = {
       name: PropTypes.string,
       username: PropTypes.string
     })
-  }),
-  handleDelete: PropTypes.func.isRequired,
-  handleLike: PropTypes.func.isRequired
+  })
 }
 
 export default Blog

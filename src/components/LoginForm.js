@@ -1,62 +1,37 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { Button, Form } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
-const LoginForm = ({ user, handleLogin, handleLogout }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+import { login } from '../reducers/authReducer'
 
-  const handleSubmit = async e => {
-    e.preventDefault()
-    await handleLogin({ username, password })
-    setUsername('')
-    setPassword('')
-  }
+const LoginForm = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
 
-  if (user) {
-    return (
-      <div>
-        {user.username} logged in{' '}
-        <button onClick={handleLogout}>logout</button>
-      </div>
-    )
+  const handleSubmit = event => {
+    event.preventDefault()
+    const username = event.target.username.value
+    const password = event.target.password.value
+    if (username !== '' && password !== '') {
+      dispatch(login({ username, password }, history))
+    }
   }
 
   return (
     <div>
       <h2>Log in to application</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          username:{' '}
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password:{' '}
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control type='text' name='username' />
+          <Form.Label>password:</Form.Label>
+          <Form.Control type='password' name='password' />
+          <Button variant='primary' type="submit">login</Button>
+        </Form.Group>
+      </Form>
     </div>
   )
-}
-
-LoginForm.propTypes = {
-  user: PropTypes.shape({
-    token: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    name: PropTypes.string
-  }),
-  handleLogin: PropTypes.func.isRequired,
-  handleLogout: PropTypes.func.isRequired
 }
 
 export default LoginForm
