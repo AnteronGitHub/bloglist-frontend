@@ -42,6 +42,17 @@ export const likeBlog = blog => {
   }
 }
 
+export const commentBlog = (blog, content) => {
+  return async dispatch => {
+    try {
+      const updatedBlog = await blogService.commentBlog(blog, content)
+      dispatch({ type: 'UPDATE_BLOG', blog: updatedBlog })
+    } catch (error) {
+      dispatch(setNotificationMessage(error.response.data.error, 'error'))
+    }
+  }
+}
+
 export const deleteBlog = blog => {
   return async dispatch => {
     try {
