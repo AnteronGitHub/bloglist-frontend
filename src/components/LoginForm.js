@@ -1,21 +1,30 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
 
-const LoginForm = ({ user, handleLogin, handleLogout }) => {
+import { login, logout } from '../reducers/authReducer'
+
+const LoginForm = () => {
+  const dispatch = useDispatch()
+  const auth = useSelector(state => state.auth)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const handleSubmit = async e => {
     e.preventDefault()
-    await handleLogin({ username, password })
+    dispatch(login({ username, password }))
     setUsername('')
     setPassword('')
   }
 
-  if (user) {
+  const handleLogout = e => {
+    e.preventDefault()
+    dispatch(logout())
+  }
+
+  if (auth) {
     return (
       <div>
-        {user.username} logged in{' '}
+        {auth.username} logged in{' '}
         <button onClick={handleLogout}>logout</button>
       </div>
     )
@@ -47,16 +56,6 @@ const LoginForm = ({ user, handleLogin, handleLogout }) => {
       </form>
     </div>
   )
-}
-
-LoginForm.propTypes = {
-  user: PropTypes.shape({
-    token: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    name: PropTypes.string
-  }),
-  handleLogin: PropTypes.func.isRequired,
-  handleLogout: PropTypes.func.isRequired
 }
 
 export default LoginForm
