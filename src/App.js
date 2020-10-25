@@ -8,6 +8,7 @@ import { initUsers } from './reducers/usersReducer'
 
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import BlogPage from './components/BlogPage'
 import ErrorNotification from './components/ErrorNotification'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -29,6 +30,9 @@ const App = () => {
   const userMatch = useRouteMatch('/users/:id')
   const user = userMatch ? users.find(u => u.id === userMatch.params.id) : null
 
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const blog = blogMatch ? blogs.find(b => b.id === blogMatch.params.id) : null
+
   return (
     <div>
       <h2>blogs</h2>
@@ -41,6 +45,9 @@ const App = () => {
         </Route>
         <Route path='/users'>
           <UsersPage />
+        </Route>
+        <Route path='/blogs/:id'>
+          <BlogPage blog={blog} />
         </Route>
         <Route path='/'>
           {auth && <BlogForm />}
